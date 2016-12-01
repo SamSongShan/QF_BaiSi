@@ -139,7 +139,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mSimplePlay.setLayoutParams(params1);
         mSimplePlay.setImageURI(Uri.parse(mData.get(position).getVideo().getThumbnail().get(0)));
         //视频设置
-        if (mData.get(position).getType().equals("video")){
+        if (mData.get(position).getType().equals("video")) {
             String url = mData.get(position).getVideo().getVideo().get(0);
             if (position == oldPosition) {
                 if (isvideo) {
@@ -191,7 +191,10 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             mRelatPlay.setTag(mImgPlay);
             mImgPlay.setOnClickListener(this);
         }
+        //文字部分
+        if (mData.get(position).getType().equals("text")){
 
+        }
 
     }
 
