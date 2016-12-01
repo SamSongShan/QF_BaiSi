@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by 11355 on 2016/11/28.
  */
 
-public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implements View.OnClickListener, MediaPlayer.OnPreparedListener {
+public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implements View.OnClickListener, MediaPlayer.OnPreparedListener, SurfaceHolder.Callback {
 
 
     public static final int TYPE_VIDEO = 0;
@@ -112,7 +113,8 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
 
     }
 
-    private int oldPosition = -1;
+    public int oldPosition = -1;
+    int num = 0;
 
     private void initViewVedio(int position) {
         //设置视宽高
@@ -137,24 +139,59 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mSimplePlay.setLayoutParams(params1);
         mSimplePlay.setImageURI(Uri.parse(mData.get(position).getVideo().getThumbnail().get(0)));
         //视频设置
+        if (mData.get(position).getType().equals("video")){
+            String url = mData.get(position).getVideo().getVideo().get(0);
+            if (position == oldPosition) {
+                if (isvideo) {
+                    if (isfirst) {
+                        if (mMediaPlayer != null) {
+                            mMediaPlayer.stop();
+                            mMediaPlayer.release();
+                        }
+                        mMediaPlayer = new MediaPlayer();
+                        mMediaPlayer.setOnPreparedListener(this);
+                        SurfaceHolder holder = mSf.getHolder();
+                        holder.addCallback(this);
 
-        if (position == oldPosition) {
-            if (mMediaPlayer == null) {
-                mMediaPlayer = new MediaPlayer();
-                mMediaPlayer.setDisplay(mSf.getHolder());
-                try {
-                    mImgPlay.setVisibility(View.GONE);
-                    mSimplePlay.setVisibility(View.GONE);
-                    mMediaPlayer.setOnPreparedListener(this);
-                    mMediaPlayer.setDataSource(mContext, Uri.parse(mData.get(position).getVideo().getVideo().get(0)));
-                    mMediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                        try {
+                            mMediaPlayer.setDataSource(mContext, Uri.parse(url));
+                            mMediaPlayer.prepareAsync();
+                            mSf.setVisibility(View.VISIBLE);
+                            mImgPlay.setVisibility(View.GONE);
+                            mSimplePlay.setVisibility(View.GONE);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        if (mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        } else {
+                            mMediaPlayer.start();
+                            mImgPlay.setVisibility(View.GONE);
+                        }
+                    }
+                } else {
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.stop();
+                        mMediaPlayer.release();
+                        isfirst = true;
+                        isvideo = false;
+                    }
                 }
+
+
+            } else {
+                mSf.setVisibility(View.INVISIBLE);
+                mImgPlay.setVisibility(View.VISIBLE);
+                mSimplePlay.setVisibility(View.VISIBLE);
             }
+            mImgPlay.setTag(position);
+            mRelatPlay.setOnClickListener(this);
+            mRelatPlay.setTag(mImgPlay);
+            mImgPlay.setOnClickListener(this);
         }
-        mImgPlay.setTag(position);
-        mImgPlay.setOnClickListener(this);
+
 
     }
 
@@ -178,6 +215,9 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         return -1;
     }
 
+    String oldurl = "_1";
+    boolean isfirst = false;
+    boolean isvideo = false;
 
     @Override
     public void onClick(View v) {
@@ -185,20 +225,33 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         switch (v.getId()) {
 
             case R.id.img_play: {
-                if (mMediaPlayer != null) {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    mMediaPlayer=null;
-                }
                 int tag = (int) v.getTag();
-                Toast.makeText(mContext, tag + "", Toast.LENGTH_SHORT).show();
-                oldPosition = tag;
-                Toast.makeText(mContext, oldPosition + 1 + "", Toast.LENGTH_SHORT).show();
+                if (mData.get(tag).getType().equals("video")) {
+                    isvideo = true;
+                    if (oldPosition == tag) {
+                        isfirst = false;
+                    } else {
+                        isfirst = true;
+                    }
+                } else {
+                    isvideo = false;
+                    isfirst = false;
+                }
 
+                oldPosition = tag;
                 notifyDataSetChanged();
             }
             break;
             case R.id.relat_play: {
+                if (mMediaPlayer != null) {
+                    if (mMediaPlayer.isPlaying()) {
+
+                        ImageView imgPlay = (ImageView) v.getTag();
+                        imgPlay.setVisibility(View.VISIBLE);
+                        mMediaPlayer.pause();
+
+                    }
+                }
 
             }
             break;
@@ -210,5 +263,31 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        mMediaPlayer.setDisplay(holder);
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
+    public void onScroll() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+        oldPosition = -1;
+        isfirst = false;
+        isvideo = false;
     }
 }

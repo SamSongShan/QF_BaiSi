@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.example.song.baisi.ApiManger;
@@ -23,7 +24,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class QuanBuFragment extends Fragment {
+public class QuanBuFragment extends Fragment implements AbsListView.OnScrollListener {
 
 
     private static final String TAG = "tag";
@@ -56,6 +57,7 @@ public class QuanBuFragment extends Fragment {
         mAdapter = new QuanbuAdapter(getContext(), datas, R.layout.item_shipin, R.layout.itme_gif, R.layout.item_photo, R.layout.item_duanzi, R.layout.itme_html);
 
         mLv.setAdapter(mAdapter);
+        mLv.setOnScrollListener(this);
         IApiService iApiService = ApiManger.creatApi();
         Call<QuanBuEntity> tuijian = iApiService.getTuijian();
         tuijian.enqueue(new Callback<QuanBuEntity>() {
@@ -74,4 +76,17 @@ public class QuanBuFragment extends Fragment {
     }
 
 
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mAdapter.oldPosition!=-1){
+            if (firstVisibleItem>mAdapter.oldPosition||firstVisibleItem+visibleItemCount<mAdapter.oldPosition){
+                mAdapter.onScroll();
+            }
+        }
+
+    }
 }
