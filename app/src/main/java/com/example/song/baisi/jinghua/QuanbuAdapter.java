@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.song.baisi.CommonAdapter;
 import com.example.song.baisi.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.IOException;
@@ -118,6 +120,11 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     int num = 0;
 
     private void initViewVedio(int position) {
+        RelativeLayout.LayoutParams paramsAll = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
+        paramsAll.width = 0;
+        paramsAll.height = 0;
+        mSf.setLayoutParams(paramsAll);
+
         //视频设置
         if (mData.get(position).getType().equals("video")) {
             mTvContent.setVisibility(View.GONE);
@@ -192,16 +199,13 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             }
             mImgPlay.setTag(position);
             mRelatPlay.setOnClickListener(this);
-            mRelatPlay.setTag(-2,mImgPlay);
-            mRelatPlay.setTag(-1,mData.get(position).getType());
+            mRelatPlay.setTag(-2, mImgPlay);
+            mRelatPlay.setTag(-1, mData.get(position).getType());
             mImgPlay.setOnClickListener(this);
         }
         //文字部分
         if (mData.get(position).getType().equals("text")) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
-            params.width=0;
-            params.height=0;
-            mSf.setLayoutParams(params);
+
             mImgPlay.setVisibility(View.GONE);
             mSimplePlay.setVisibility(View.GONE);
             mTvContent.setVisibility(View.VISIBLE);
@@ -210,6 +214,24 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         } else {
 
         }
+        //GIF部分
+        if (mData.get(position).getType().equals("gif")) {
+            mImgPlay.setVisibility(View.GONE);
+            mTvContent.setVisibility(View.GONE);
+            mSimplePlay.setVisibility(View.VISIBLE);
+            mSimplePlay.setImageURI(Uri.parse(mData.get(position).getGif().getGif_thumbnail().get(0)));
+            DraweeController mDraweeController = Fresco.newDraweeControllerBuilder()
+                    .setAutoPlayAnimations(true)
+                    //加载drawable里的一张gif图
+                    .setUri(Uri.parse(mData.get(position).getGif().getImages().get(0)))//设置uri
+                    .build();
+            //设置Controller
+            mSimplePlay.setController(mDraweeController);
+
+        } else {
+
+        }
+
 
     }
 
@@ -221,7 +243,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             case "video":
                 return TYPE_VIDEO;
             case "gif":
-                return TYPE_GIF;
+                return TYPE_VIDEO;
             case "image":
                 return TYPE_PHOTO;
             case "text":
@@ -262,7 +284,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             break;
             case R.id.relat_play: {
                 String type = (String) v.getTag(-1);
-                if ("video".equals(type)){
+                if ("video".equals(type)) {
                     if (mMediaPlayer != null) {
                         if (mMediaPlayer.isPlaying()) {
 
