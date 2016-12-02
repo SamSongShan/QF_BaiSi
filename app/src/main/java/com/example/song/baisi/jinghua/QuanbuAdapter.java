@@ -230,6 +230,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
 
         } else {
 
+
         }
 
 
