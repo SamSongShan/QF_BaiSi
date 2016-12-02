@@ -40,6 +40,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     private SimpleDraweeView mSimplePlay;
     private RelativeLayout mRelatPlay;
     private SimpleDraweeView mSimpleDraweeView;
+    private TextView mTvContent;
 
     public QuanbuAdapter(Context context, List<QuanBuEntity.ListEntity> data, int... layoutId) {
         super(context, data, layoutId);
@@ -110,36 +111,39 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mTvPinglun = (TextView) view.mView.findViewById(R.id.tv_pinglun);
         mLv = (ListView) view.mView.findViewById(R.id.lv);
         mImgPlay = (ImageView) view.mView.findViewById(R.id.img_play);
-
+        mTvContent = (TextView) view.mView.findViewById(R.id.tv_content);
     }
 
     public int oldPosition = -1;
     int num = 0;
 
     private void initViewVedio(int position) {
-        //设置视宽高
-        int height = mData.get(position).getVideo().getHeight();
-        int width = mData.get(position).getVideo().getWidth();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
-        params.width = mContext.getResources().getDisplayMetrics().widthPixels;
-        if (mContext.getResources().getDisplayMetrics().widthPixels * height / width < 1000) {
-            params.height = mContext.getResources().getDisplayMetrics().widthPixels * height / width;
-        } else {
-            params.height = 1000;
-        }
-        mSf.setLayoutParams(params);
-        //设置遮挡图片宽高
-        RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) mSimplePlay.getLayoutParams();
-        params1.width = mContext.getResources().getDisplayMetrics().widthPixels;
-        if (mContext.getResources().getDisplayMetrics().widthPixels * height / width < 1000) {
-            params1.height = mContext.getResources().getDisplayMetrics().widthPixels * height / width;
-        } else {
-            params1.height = 1000;
-        }
-        mSimplePlay.setLayoutParams(params1);
-        mSimplePlay.setImageURI(Uri.parse(mData.get(position).getVideo().getThumbnail().get(0)));
         //视频设置
         if (mData.get(position).getType().equals("video")) {
+            mTvContent.setVisibility(View.GONE);
+            mImgPlay.setVisibility(View.VISIBLE);
+            mSimplePlay.setVisibility(View.VISIBLE);
+            //设置视宽高
+            int height = mData.get(position).getVideo().getHeight();
+            int width = mData.get(position).getVideo().getWidth();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
+            params.width = mContext.getResources().getDisplayMetrics().widthPixels;
+            if (mContext.getResources().getDisplayMetrics().widthPixels * height / width < 1000) {
+                params.height = mContext.getResources().getDisplayMetrics().widthPixels * height / width;
+            } else {
+                params.height = 1000;
+            }
+            mSf.setLayoutParams(params);
+            //设置遮挡图片宽高
+            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) mSimplePlay.getLayoutParams();
+            params1.width = mContext.getResources().getDisplayMetrics().widthPixels;
+            if (mContext.getResources().getDisplayMetrics().widthPixels * height / width < 1000) {
+                params1.height = mContext.getResources().getDisplayMetrics().widthPixels * height / width;
+            } else {
+                params1.height = 1000;
+            }
+            mSimplePlay.setLayoutParams(params1);
+            mSimplePlay.setImageURI(Uri.parse(mData.get(position).getVideo().getThumbnail().get(0)));
             String url = mData.get(position).getVideo().getVideo().get(0);
             if (position == oldPosition) {
                 if (isvideo) {
@@ -188,11 +192,22 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             }
             mImgPlay.setTag(position);
             mRelatPlay.setOnClickListener(this);
-            mRelatPlay.setTag(mImgPlay);
+            mRelatPlay.setTag(-2,mImgPlay);
+            mRelatPlay.setTag(-1,mData.get(position).getType());
             mImgPlay.setOnClickListener(this);
         }
         //文字部分
-        if (mData.get(position).getType().equals("text")){
+        if (mData.get(position).getType().equals("text")) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
+            params.width=0;
+            params.height=0;
+            mSf.setLayoutParams(params);
+            mImgPlay.setVisibility(View.GONE);
+            mSimplePlay.setVisibility(View.GONE);
+            mTvContent.setVisibility(View.VISIBLE);
+            String text = mData.get(position).getText();
+            mTvContent.setText(text);
+        } else {
 
         }
 
@@ -210,7 +225,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             case "image":
                 return TYPE_PHOTO;
             case "text":
-                return TYPE_TEXT;
+                return TYPE_VIDEO;
             case "html":
                 return TYPE_HTML;
         }
@@ -246,15 +261,19 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             }
             break;
             case R.id.relat_play: {
-                if (mMediaPlayer != null) {
-                    if (mMediaPlayer.isPlaying()) {
+                String type = (String) v.getTag(-1);
+                if ("video".equals(type)){
+                    if (mMediaPlayer != null) {
+                        if (mMediaPlayer.isPlaying()) {
 
-                        ImageView imgPlay = (ImageView) v.getTag();
-                        imgPlay.setVisibility(View.VISIBLE);
-                        mMediaPlayer.pause();
+                            ImageView imgPlay = (ImageView) v.getTag(-2);
+                            imgPlay.setVisibility(View.VISIBLE);
+                            mMediaPlayer.pause();
 
+                        }
                     }
                 }
+
 
             }
             break;

@@ -54,7 +54,7 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
     }
 
     private void initView() {
-        mAdapter = new QuanbuAdapter(getContext(), datas, R.layout.item_shipin, R.layout.itme_gif, R.layout.item_photo, R.layout.item_duanzi, R.layout.itme_html);
+        mAdapter = new QuanbuAdapter(getContext(), datas, R.layout.item_shipin, R.layout.itme_gif, R.layout.item_photo, R.layout.item_shipin, R.layout.itme_html);
 
         mLv.setAdapter(mAdapter);
         mLv.setOnScrollListener(this);
