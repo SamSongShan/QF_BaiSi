@@ -1,4 +1,4 @@
-package com.example.song.baisi.jinghua;
+package com.example.song.baisi.xintie;
 
 
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.song.baisi.IApiService;
 import com.example.song.baisi.R;
+import com.example.song.baisi.jinghua.QuanBuFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class JingHuaFragment extends Fragment {
+public class XinTieFragment extends Fragment {
 
 
-    private View mView;
-
-    public JingHuaFragment() {
+    public XinTieFragment() {
         // Required empty public constructor
     }
 
@@ -33,12 +32,9 @@ public class JingHuaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if (mView==null){
-            mView = inflater.inflate(R.layout.fragment_jing_hua, container, false);
-            assignViews(mView);
-
-        }
-        return mView;
+        View view = inflater.inflate(R.layout.fragment_xin_tie, container, false);
+        assignViews(view);
+        return view;
     }
 
     private TabLayout mTab;
@@ -52,13 +48,13 @@ public class JingHuaFragment extends Fragment {
     }
 
     private void initView() {
-        final String[] titles = new String[]{"推荐", "视频", "图片", "段子", "排行","社会","美女","冷知识","游戏","网红"};
+        final String[] titles = new String[]{"全部", "视频", "图片", "段子", "美女","冷知识","游戏","网红"};
         final List<Fragment> fragments = new ArrayList<>();
-        final String[] baseUrl=new String[]{IApiService.TJ_PATH,IApiService.SP_PATH,IApiService.TP_PATH,IApiService.DZ_PATH,IApiService.PH_PATH,IApiService.SH_PATH,IApiService.MN_PATH,IApiService.LZS_PATH,IApiService.YX_PATH,IApiService.WH_PATH};
+        final String[] baseUrl=new String[]{IApiService.NEW_ZX_PATH,IApiService.NEW_SP_PATH,IApiService.NEW_TP_PATH,IApiService.NEW_DZ_PATH,IApiService.NEW_MN_PATH,IApiService.NEW_LZS_PATH,IApiService.NEW_YX_PATH,IApiService.NEW_WH_PATH};
         for (int i = 0; i < titles.length; i++) {
-            QuanBuFragment fragment = new QuanBuFragment();
+            TuiJianFragment fragment = new TuiJianFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("part",1);
+            bundle.putInt("part",2);
             bundle.putString("baseUrl",baseUrl[i]);
             fragment.setArguments(bundle);
             fragments.add(fragment);

@@ -1,10 +1,9 @@
-package com.example.song.baisi.jinghua;
+package com.example.song.baisi.xintie;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,8 @@ import android.widget.Toast;
 import com.example.song.baisi.ApiManger;
 import com.example.song.baisi.IApiService;
 import com.example.song.baisi.R;
+import com.example.song.baisi.jinghua.QuanBuEntity;
+import com.example.song.baisi.jinghua.QuanbuAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class QuanBuFragment extends Fragment implements AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener {
-
+public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener {
 
     private static final String TAG = "tag";
     private QuanbuAdapter mAdapter;
@@ -35,8 +35,7 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
     private String mBaseUrl;
     private int mPart;
     private Call<QuanBuEntity> mTuijian;
-
-    public QuanBuFragment() {
+    public TuiJianFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +44,7 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_quan_bu, container, false);
+        View view = inflater.inflate(R.layout.fragment_tui_jian, container, false);
         Bundle bundle = getArguments();
         mBaseUrl = bundle.getString("baseUrl");
         mPart = bundle.getInt("part");

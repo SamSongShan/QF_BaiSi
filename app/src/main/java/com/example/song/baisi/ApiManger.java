@@ -8,9 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class ApiManger {
-    public static IApiService creatApi(){
+    public static IApiService creatApi(String baseurl){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(IApiService.TJ_PATH)
+                .baseUrl(baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         IApiService iApiService = retrofit.create(IApiService.class);
