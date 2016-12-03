@@ -1,14 +1,18 @@
 package com.example.song.baisi.jinghua;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +21,8 @@ import android.widget.Toast;
 import com.example.song.baisi.CommonAdapter;
 import com.example.song.baisi.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -43,6 +49,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     private RelativeLayout mRelatPlay;
     private SimpleDraweeView mSimpleDraweeView;
     private TextView mTvContent;
+    private LinearLayout mLineContent;
 
     public QuanbuAdapter(Context context, List<QuanBuEntity.ListEntity> data, int... layoutId) {
         super(context, data, layoutId);
@@ -114,6 +121,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mLv = (ListView) view.mView.findViewById(R.id.lv);
         mImgPlay = (ImageView) view.mView.findViewById(R.id.img_play);
         mTvContent = (TextView) view.mView.findViewById(R.id.tv_content);
+        mLineContent = (LinearLayout) view.mView.findViewById(R.id.line_content);
     }
 
     public int oldPosition = -1;
@@ -153,7 +161,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             mSimplePlay.setImageURI(Uri.parse(mData.get(position).getVideo().getThumbnail().get(0)));
             String url = mData.get(position).getVideo().getVideo().get(0);
             if (position == oldPosition) {
-                if (isvideo) {
+                if (mData.get(position).getType().equals("video")) {
                     if (isfirst) {
                         if (mMediaPlayer != null) {
                             mMediaPlayer.stop();
@@ -176,18 +184,17 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
                         }
                     } else {
                         if (mMediaPlayer.isPlaying()) {
-                            mMediaPlayer.pause();
+                           mMediaPlayer.start();
                         } else {
                             mMediaPlayer.start();
                             mImgPlay.setVisibility(View.GONE);
+                            mSimplePlay.setVisibility(View.GONE);
                         }
                     }
                 } else {
                     if (mMediaPlayer != null) {
-                        mMediaPlayer.stop();
-                        mMediaPlayer.release();
+                        mMediaPlayer.start();
                         isfirst = true;
-                        isvideo = false;
                     }
                 }
 
@@ -209,6 +216,11 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             mImgPlay.setVisibility(View.GONE);
             mSimplePlay.setVisibility(View.GONE);
             mTvContent.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLineContent.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            mLineContent.setBackgroundColor(Color.parseColor("#ffffff"));
+            mLineContent.setAlpha(1f);
+            mLineContent.setLayoutParams(layoutParams);
             String text = mData.get(position).getText();
             mTvContent.setText(text);
         } else {
@@ -229,8 +241,35 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             mSimplePlay.setController(mDraweeController);
 
         } else {
+        }
+        if (mData.get(position).getType().equals("image")) {
+            mImgPlay.setVisibility(View.GONE);
+            mSimplePlay.setVisibility(View.VISIBLE);
+
+            mTvContent.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLineContent.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            mLineContent.setBackgroundColor(Color.parseColor("#FFDE5F0A"));
+            mLineContent.setAlpha(0.8f);
+            mLineContent.setLayoutParams(layoutParams);
+            mTvContent.setText("    点击查看详情");
+            int height = mData.get(position).getImage().getHeight();
+            int width = mData.get(position).getImage().getWidth();
+            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) mSimplePlay.getLayoutParams();
+            params1.width = mContext.getResources().getDisplayMetrics().widthPixels;
+            if (mContext.getResources().getDisplayMetrics().widthPixels * height / width < 1500) {
+                params1.height = mContext.getResources().getDisplayMetrics().widthPixels * height / width;
+            } else {
+                params1.height = 1500;
+            }
+            mSimplePlay.setLayoutParams(params1);
+            GenericDraweeHierarchy hierarchy = mSimplePlay.getHierarchy();
+            hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP);
+            hierarchy.setActualImageFocusPoint(new PointF(0, 0));
 
 
+            mSimplePlay.setImageURI(Uri.parse(mData.get(position).getImage().getBig().get(0)));
+        } else {
         }
 
 
@@ -246,7 +285,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             case "gif":
                 return TYPE_VIDEO;
             case "image":
-                return TYPE_PHOTO;
+                return TYPE_VIDEO;
             case "text":
                 return TYPE_VIDEO;
             case "html":
@@ -268,14 +307,13 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             case R.id.img_play: {
                 int tag = (int) v.getTag();
                 if (mData.get(tag).getType().equals("video")) {
-                    isvideo = true;
+
                     if (oldPosition == tag) {
                         isfirst = false;
                     } else {
                         isfirst = true;
                     }
                 } else {
-                    isvideo = false;
                     isfirst = false;
                 }
 

@@ -58,13 +58,21 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:src="@drawable/play_tougao"/>
-        <TextView
-
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:id="@+id/tv_content"
+        <LinearLayout
+            android:id="@+id/line_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="vertical">
+            <TextView
+                android:layout_margin="10dp"
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
 
 
     </RelativeLayout>
