@@ -4,6 +4,7 @@ package com.example.song.baisi.jinghua;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -64,23 +65,36 @@ public class JingHuaFragment extends Fragment {
             fragments.add(fragment);
         }
 
-        mViewpager.setAdapter(new FragmentStatePagerAdapter(getFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return fragments.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return titles.length;
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return titles[position];
-            }
-        });
+        mViewpager.setAdapter(new MyViewpagerAdapter(getChildFragmentManager(),fragments,titles));
         mTab.setupWithViewPager(mViewpager);
+    }
+    class MyViewpagerAdapter extends FragmentStatePagerAdapter{
+
+        private final FragmentManager mFm;
+        private final List<Fragment> mFragments;
+        private final String[] mTitles;
+
+        public MyViewpagerAdapter(FragmentManager fm, List<Fragment> fragments, String[] titles) {
+            super(fm);
+            mFm = fm;
+            mFragments = fragments;
+            mTitles = titles;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mTitles.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTitles[position];
+        }
     }
 
 }

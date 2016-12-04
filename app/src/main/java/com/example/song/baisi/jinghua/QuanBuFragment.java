@@ -148,9 +148,5 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
         downLoadData();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mTuijian1.cancel();
-    }
+
 }

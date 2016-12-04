@@ -148,10 +148,6 @@ public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRe
         downLoadData();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mTuijian1.cancel();
 
-    }
+
 }
