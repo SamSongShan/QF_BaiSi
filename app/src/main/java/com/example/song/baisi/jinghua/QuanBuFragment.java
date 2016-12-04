@@ -35,6 +35,7 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
     private String mBaseUrl;
     private int mPart;
     private Call<QuanBuEntity> mTuijian;
+    private Call<QuanBuEntity> mTuijian1;
 
     public QuanBuFragment() {
         // Required empty public constructor
@@ -83,7 +84,8 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
         }else {
             mTuijian =iApiService.getTuijian(json+"");
         }
-        mTuijian.enqueue(new Callback<QuanBuEntity>() {
+        mTuijian1 = mTuijian;
+        mTuijian1.enqueue(new Callback<QuanBuEntity>() {
             @Override
             public void onResponse(Call<QuanBuEntity> call, Response<QuanBuEntity> response) {
                 List<QuanBuEntity.ListEntity> list = response.body().getList();
@@ -144,5 +146,11 @@ public class QuanBuFragment extends Fragment implements AbsListView.OnScrollList
         isRefresh = true;
         json = 5;
         downLoadData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTuijian1.cancel();
     }
 }

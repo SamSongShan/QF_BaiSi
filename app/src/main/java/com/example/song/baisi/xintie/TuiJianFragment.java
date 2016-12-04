@@ -35,6 +35,8 @@ public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private String mBaseUrl;
     private int mPart;
     private Call<QuanBuEntity> mTuijian;
+    private Call<QuanBuEntity> mTuijian1;
+
     public TuiJianFragment() {
         // Required empty public constructor
     }
@@ -77,7 +79,8 @@ public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void downLoadData() {
         IApiService iApiService = ApiManger.creatApi(mBaseUrl);
         if (mPart==1){
-            mTuijian = iApiService.getTuijian(json+"");
+            mTuijian1 = mTuijian;
+            mTuijian1 = iApiService.getTuijian(json+"");
 
         }else {
             mTuijian =iApiService.getTuijian(json+"");
@@ -143,5 +146,12 @@ public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRe
         isRefresh = true;
         json = 5;
         downLoadData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTuijian1.cancel();
+
     }
 }

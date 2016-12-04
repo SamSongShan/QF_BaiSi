@@ -79,4 +79,5 @@ public class XinTieFragment extends Fragment {
         mTab.setupWithViewPager(mViewpager);
     }
 
+
 }
