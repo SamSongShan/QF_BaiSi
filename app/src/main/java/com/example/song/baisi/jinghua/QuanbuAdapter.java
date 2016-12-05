@@ -12,6 +12,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +34,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletionService;
+
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+import retrofit2.Callback;
 
 /**
  * Created by 11355 on 2016/11/28.
@@ -56,12 +63,21 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     private LinearLayout mLineContent;
     private TextView mTvCommentName;
     private TextView mTvCommentcontext;
+    private ImageView mImgUnDianZan1;
+    private ImageView mImgDianZan1;
+    private ImageView mDianzan1;
+    private TextView mTv;
+    private ImageView mDaizan;
+    private ImageView mUnDianzan1;
+    private TextView mUnTV;
+    private ImageView mUnDaizan;
 
     public QuanbuAdapter(Context context, List<QuanBuEntity.ListEntity> data, int... layoutId) {
         super(context, data, layoutId);
         mContext = context;
         mData = data;
         mLayoutId = layoutId;
+        ShareSDK.initSDK(mContext, "19a24e5b173ac");
     }
 
     @Override
@@ -128,6 +144,8 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mImgPlay = (ImageView) view.mView.findViewById(R.id.img_play);
         mTvContent = (TextView) view.mView.findViewById(R.id.tv_content);
         mLineContent = (LinearLayout) view.mView.findViewById(R.id.line_content);
+        mImgDianZan1 = (ImageView) view.mView.findViewById(R.id.img_dianzan_1);
+        mImgUnDianZan1 = (ImageView) view.mView.findViewById(R.id.img_undianzan_1);
     }
 
     public int oldPosition = -1;
@@ -283,11 +301,13 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mTvTime.setText(mData.get(position).getPasstime());
         mTvText.setText(mData.get(position).getText());
         mTvDianzan.setText(mData.get(position).getUp() + "");
+        mTvDianzan.setTextColor(Color.parseColor("#434141"));
         mTvUndianzan.setText(mData.get(position).getDown() + "");
+        mTvUndianzan.setTextColor(Color.parseColor("#434141"));
         mTvFenxiang.setText(mData.get(position).getForward() + "");
         mTvPinglun.setText(mData.get(position).getComment() + "");
         final List<QuanBuEntity.ListEntity.TopCommentsEntity> top_comments = mData.get(position).getTop_comments();
-        if (top_comments!=null) {
+        if (top_comments != null) {
             mLv.setAdapter(new CommonAdapter<QuanBuEntity.ListEntity.TopCommentsEntity>(mContext, top_comments, R.layout.item_shipin_comment) {
                 @Override
                 public void bindData(int position, viewHolder mHolder) {
@@ -307,13 +327,26 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
 
                 private void initView(int position) {
 
-                    mTvCommentName.setText(Html.fromHtml(String.format(mContext.getString(R.string.text),top_comments.get(position).getU().getName(),"  :     "+top_comments.get(position).getContent())));
+                    mTvCommentName.setText(Html.fromHtml(String.format(mContext.getString(R.string.text), top_comments.get(position).getU().getName(), "  :     " + top_comments.get(position).getContent())));
 
                 }
 
             });
             setListViewHeightBasedOnChildren(mLv);
         }
+        mImgDianzan.setTag(-1, mImgDianZan1);
+        mImgDianzan.setTag(-2, mTvDianzan);
+        mImgDianzan.setTag(-3, mImgUndianzan);
+
+        mImgUndianzan.setTag(-1, mImgUnDianZan1);
+        mImgUndianzan.setTag(-2, mTvUndianzan);
+        mImgUndianzan.setTag(-3, mImgDianzan);
+
+        mImgDianzan.setOnClickListener(this);
+        mImgUndianzan.setOnClickListener(this);
+
+        mImgFenxiang.setOnClickListener(this);
+        mImgFenxiang.setTag(position);
 
     }
 
@@ -329,7 +362,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         for (int i = 0, len = listAdapter.getCount(); i < len; i++) { // listAdapter.getCount()返回数据项的数目
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0); // 计算子项View 的宽高
-            totalHeight += listItem.getMeasuredHeight()+listItem.getPaddingBottom()+listItem.getPaddingTop(); // 统计所有子项的总高度
+            totalHeight += listItem.getMeasuredHeight() + listItem.getPaddingBottom() + listItem.getPaddingTop(); // 统计所有子项的总高度
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
@@ -339,6 +372,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         // params.height最后得到整个ListView完整显示需要的高度
         listView.setLayoutParams(params);
     }
+
     @Override
     public int getItemViewType(int position) {
 
@@ -401,6 +435,78 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
 
             }
             break;
+            case R.id.img_dianzan: {
+                mDianzan1 = (ImageView) v.getTag(-1);
+                mTv = (TextView) v.getTag(-2);
+                mUnDaizan = (ImageView) v.getTag(-3);
+                v.setClickable(false);
+                mUnDaizan.setClickable(false);
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_dianzan);
+                mDianzan1.setAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mDianzan1.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mDianzan1.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                String s = String.valueOf(mTv.getText());
+                int i = Integer.parseInt(s);
+                mTv.setText(i + 1 + "");
+                mTv.setTextColor(Color.parseColor("#d9181e"));
+
+            }
+            break;
+            case R.id.img_undianzan: {
+                mUnDianzan1 = (ImageView) v.getTag(-1);
+                mUnTV = (TextView) v.getTag(-2);
+                mDaizan = (ImageView) v.getTag(-3);
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_dianzan);
+
+                mUnDianzan1.setAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mUnDianzan1.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mUnDianzan1.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                String s = String.valueOf(mUnTV.getText());
+                int i = Integer.parseInt(s);
+                mUnTV.setText(i + 1 + "");
+                mUnTV.setTextColor(Color.parseColor("#d9181e"));
+                v.setClickable(false);
+                mDaizan.setClickable(false);
+            }
+            break;
+            case R.id.img_fenxiang: {
+                int tag = (int) v.getTag();
+                QuanBuEntity.ListEntity entity = mData.get(tag);
+                showShare(entity.getU().getHeader().get(0),entity.getText(),entity.getShare_url(),entity.getComment());
+            }
+            break;
         }
 
     }
@@ -435,5 +541,32 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         oldPosition = -1;
         isfirst = false;
         isvideo = false;
+    }
+
+    private void showShare(String title, String textcontent, String url, String comment) {
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        // title标题，印象笔记、邮箱、信息、微信、人人网、QQ和QQ空间使用
+        oks.setTitle(title);
+        // titleUrl是标题的网络链接，仅在Linked-in,QQ和QQ空间使用
+//        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(textcontent);
+        //分享网络图片，新浪微博分享网络图片需要通过审核后申请高级写入接口，否则请注释掉测试新浪微博
+        oks.setImageUrl(url);
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl(url);
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment(comment);
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite("百思不得姐");
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://www.budejie.com/");
+
+// 启动分享GUI
+        oks.show(mContext);
     }
 }
