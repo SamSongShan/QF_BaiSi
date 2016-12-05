@@ -504,7 +504,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             case R.id.img_fenxiang: {
                 int tag = (int) v.getTag();
                 QuanBuEntity.ListEntity entity = mData.get(tag);
-                showShare(entity.getU().getHeader().get(0),entity.getText(),entity.getShare_url(),entity.getComment());
+                showShare(entity.getU().getHeader().get(0), entity.getText(), entity.getShare_url(), entity.getComment());
             }
             break;
         }
@@ -550,7 +550,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         // title标题，印象笔记、邮箱、信息、微信、人人网、QQ和QQ空间使用
         oks.setTitle(title);
         // titleUrl是标题的网络链接，仅在Linked-in,QQ和QQ空间使用
-//        oks.setTitleUrl("http://sharesdk.cn");
+        oks.setTitleUrl("http://sharesdk.cn");
         // text是分享文本，所有平台都需要这个字段
         oks.setText(textcontent);
         //分享网络图片，新浪微博分享网络图片需要通过审核后申请高级写入接口，否则请注释掉测试新浪微博
@@ -566,7 +566,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         // siteUrl是分享此内容的网站地址，仅在QQ空间使用
         oks.setSiteUrl("http://www.budejie.com/");
 
-// 启动分享GUI
+        // 启动分享GUI
         oks.show(mContext);
     }
 }
