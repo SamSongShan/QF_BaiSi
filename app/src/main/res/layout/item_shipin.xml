@@ -11,11 +11,12 @@
         android:layout_margin="10dp">
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/simple_head"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             fresco:placeholderImage="@mipmap/ic_launcher"
             fresco:roundAsCircle="true"/>
         <TextView
+            android:textColor="#2027e4"
             android:id="@+id/tv_roomname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
             android:layout_toRightOf="@+id/simple_head"
             android:text="田小豆视频"/>
         <TextView
+            android:textSize="12sp"
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,12 +35,16 @@
 
     </RelativeLayout>
     <TextView
+        android:textColor="#3d3b3b"
         android:id="@+id/tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="让人家情侣去开房,真是好心人呀"/>
     <RelativeLayout
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:id="@+id/relat_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,10 +71,10 @@
             android:background="#ffffff"
             android:orientation="vertical">
             <TextView
-                android:layout_margin="10dp"
                 android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -136,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
-                android:src="@drawable/showbig_bottom_share"/>
+                android:src="@drawable/forward_black"/>
             <TextView
                 android:id="@+id/tv_fenxiang"
                 android:layout_width="wrap_content"
@@ -156,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/showbig_bottom_comment"/>
+                android:src="@drawable/commend_black"/>
             <TextView
                 android:id="@+id/tv_pinglun"
                 android:layout_width="wrap_content"
@@ -169,8 +175,14 @@
 
     </LinearLayout>
     <ListView
+        android:layout_margin="10dp"
+        android:background="#c9bebe"
         android:id="@+id/lv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="match_parent"
+        android:divider="#00000000"
+        android:dividerHeight="0dip">
+
+    </ListView>
 
 </LinearLayout>

@@ -6,6 +6,8 @@ import android.graphics.PointF;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.song.baisi.CommonAdapter;
 import com.example.song.baisi.R;
+import com.example.song.baisi.widget.MixtureTextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -50,6 +54,8 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     private SimpleDraweeView mSimpleDraweeView;
     private TextView mTvContent;
     private LinearLayout mLineContent;
+    private TextView mTvCommentName;
+    private TextView mTvCommentcontext;
 
     public QuanbuAdapter(Context context, List<QuanBuEntity.ListEntity> data, int... layoutId) {
         super(context, data, layoutId);
@@ -128,7 +134,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
     int num = 0;
 
     private void initViewVedio(int position) {
-        RelativeLayout.LayoutParams paramsAll = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
+        final RelativeLayout.LayoutParams paramsAll = (RelativeLayout.LayoutParams) mSf.getLayoutParams();
         paramsAll.width = 0;
         paramsAll.height = 0;
         mSf.setLayoutParams(paramsAll);
@@ -184,7 +190,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
                         }
                     } else {
                         if (mMediaPlayer.isPlaying()) {
-                           mMediaPlayer.start();
+                            mMediaPlayer.start();
                         } else {
                             mMediaPlayer.start();
                             mImgPlay.setVisibility(View.GONE);
@@ -272,10 +278,67 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         } else {
         }
 
+        mSimpleHaed.setImageURI(Uri.parse(mData.get(position).getU().getHeader().get(0)));
+        mTvRoomname.setText(mData.get(position).getU().getRoom_name());
+        mTvTime.setText(mData.get(position).getPasstime());
+        mTvText.setText(mData.get(position).getText());
+        mTvDianzan.setText(mData.get(position).getUp() + "");
+        mTvUndianzan.setText(mData.get(position).getDown() + "");
+        mTvFenxiang.setText(mData.get(position).getForward() + "");
+        mTvPinglun.setText(mData.get(position).getComment() + "");
+        final List<QuanBuEntity.ListEntity.TopCommentsEntity> top_comments = mData.get(position).getTop_comments();
+        if (top_comments!=null) {
+            mLv.setAdapter(new CommonAdapter<QuanBuEntity.ListEntity.TopCommentsEntity>(mContext, top_comments, R.layout.item_shipin_comment) {
+                @Override
+                public void bindData(int position, viewHolder mHolder) {
+                    View view = mHolder.mView;
+                    assignViews(view);
+                    initView(position);
+                }
+
+                private TextView mTvCommentName;
+                private TextView mTvCommentContext;
+
+                private void assignViews(View view) {
+                    mTvCommentName = (TextView) view.findViewById(R.id.tv_comment_name);
+                    mTvCommentContext = (TextView) view.findViewById(R.id.tv_comment_context);
+
+                }
+
+                private void initView(int position) {
+
+                    mTvCommentName.setText(Html.fromHtml(String.format(mContext.getString(R.string.text),top_comments.get(position).getU().getName(),"  :     "+top_comments.get(position).getContent())));
+
+                }
+
+            });
+            setListViewHeightBasedOnChildren(mLv);
+        }
 
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        // 获取ListView对应的Adapter
 
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0, len = listAdapter.getCount(); i < len; i++) { // listAdapter.getCount()返回数据项的数目
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0); // 计算子项View 的宽高
+            totalHeight += listItem.getMeasuredHeight()+listItem.getPaddingBottom()+listItem.getPaddingTop(); // 统计所有子项的总高度
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        // listView.getDividerHeight()获取子项间分隔符占用的高度
+        // params.height最后得到整个ListView完整显示需要的高度
+        listView.setLayoutParams(params);
+    }
     @Override
     public int getItemViewType(int position) {
 
