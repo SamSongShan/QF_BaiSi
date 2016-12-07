@@ -1,11 +1,14 @@
 package com.example.song.baisi;
 
+import com.example.song.baisi.jinghua.CommentListEntity;
 import com.example.song.baisi.jinghua.QuanBuEntity;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+import static com.example.song.baisi.IApiService.TUIJIAN_COMMENT_URL;
 
 /**
  * Created by 11355 on 2016/11/28.
@@ -21,9 +24,12 @@ public interface IApiService {
 
     @GET(IApiService.COM_PATH)
     Call<QuanBuEntity> getTuijian(@Path("json") String json);
+
     @GET(IApiService.NEW_COM_PATH)
     Call<QuanBuEntity> getNewQuanBu(@Path("json") String json);
 
+    @GET(TUIJIAN_COMMENT_URL)
+    Call<String> getCommentTuiJian(@Path("id") String id);
 
     /**
      * 视频页面URL
@@ -82,5 +88,10 @@ public interface IApiService {
     // http://s.budejie.com/topic/list/zuixin/31/budejie-android-6.6.1/0-20.json?market=baidu&ver=6.6.1&visiting=&os=5.0&appname=baisibudejie&client=android&udid=000000000000000&mac=08%3A00%3A27%3Aec%3A7d%3Aef
     //网红
     public static final String NEW_WH_PATH = "http://s.budejie.com/topic/tag-topic/3096/new/";
+    // http://c.api.budejie.com/topic/comment_list/22455798/0/budejie-android-6.6.1/0-20.json?
+//评论baseUrl
+    public static final String COMMENT_BASE_URL = "http://c.api.budejie.com/";
+    //推荐评论
+    public static final String TUIJIAN_COMMENT_URL = "topic/comment_list/{id}/0/budejie-android-6.6.1/0-20.json?";
 
 }

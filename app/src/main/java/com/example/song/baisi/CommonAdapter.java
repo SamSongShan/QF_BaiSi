@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.example.song.baisi.jinghua.CommentActivity;
+import com.example.song.baisi.jinghua.CommentListEntity;
+import com.example.song.baisi.jinghua.Precmts1Entity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +26,8 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         this.layoutId = layoutId;
         this.context=context;
     }
+
+
 
     @Override
     public int getCount() {

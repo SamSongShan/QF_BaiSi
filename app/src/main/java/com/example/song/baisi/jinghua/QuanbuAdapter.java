@@ -1,6 +1,7 @@
 package com.example.song.baisi.jinghua;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.media.MediaPlayer;
@@ -348,6 +349,9 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
         mImgFenxiang.setOnClickListener(this);
         mImgFenxiang.setTag(position);
 
+        mImgPinglun.setOnClickListener(this);
+        mImgPinglun.setTag(position);
+
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -507,6 +511,13 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
                 showShare(entity.getU().getHeader().get(0), entity.getText(), entity.getShare_url(), entity.getComment());
             }
             break;
+            case R.id.img_pinglun:
+            {
+                int tag = (int) v.getTag();
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("id",mData.get(tag).getId());
+                mContext.startActivity(intent);
+            }break;
         }
 
     }
