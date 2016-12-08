@@ -71,7 +71,13 @@ public class TuiJianFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mLv.setAdapter(mAdapter);
         mSwRefresh.setOnRefreshListener(this);
         mLv.setOnScrollListener(this);
-        downLoadData();
+        mSwRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwRefresh.setRefreshing(true);
+                downLoadData();
+            }
+        });
     }
 
     private int json = 5;
