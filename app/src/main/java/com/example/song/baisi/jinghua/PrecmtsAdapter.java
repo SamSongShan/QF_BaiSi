@@ -51,6 +51,7 @@ public class PrecmtsAdapter extends CommonAdapter<Precmts1Entity.NormalEntity.Li
             mImgAnothercommentDianzan.setTag(-1-position,mImgAnothercommentDianzan1);
             mImgAnothercommentDianzan.setTag(-2-position,mTvAnothercommentNumDZ);
             mImgAnothercommentDianzan.setTag(position);
+
         }
     }
 

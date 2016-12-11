@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -247,7 +248,7 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             mLineContent.setAlpha(1f);
             mLineContent.setLayoutParams(layoutParams);
             String text = mData.get(position).getText();
-            mTvContent.setText(text);
+            //mTvContent.setText(text);
         } else {
 
         }
@@ -292,7 +293,8 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
             hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP);
             hierarchy.setActualImageFocusPoint(new PointF(0, 0));
 
-
+            mLineContent.setOnClickListener(this);
+            mLineContent.setTag(position);
             mSimplePlay.setImageURI(Uri.parse(mData.get(position).getImage().getBig().get(0)));
         } else {
         }
@@ -511,13 +513,18 @@ public class QuanbuAdapter extends CommonAdapter<QuanBuEntity.ListEntity> implem
                 showShare(entity.getU().getHeader().get(0), entity.getText(), entity.getShare_url(), entity.getComment());
             }
             break;
-            case R.id.img_pinglun:
-            {
+            case R.id.img_pinglun: {
                 int tag = (int) v.getTag();
                 Intent intent = new Intent(mContext, CommentActivity.class);
-                intent.putExtra("id",mData.get(tag).getId());
+                intent.putExtra("bean", mData.get(tag));
                 mContext.startActivity(intent);
-            }break;
+            }
+            break;
+            case R.id.line_content:
+                int tag = (int) v.getTag();
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("bean", mData.get(tag));
+                mContext.startActivity(intent);
         }
 
     }

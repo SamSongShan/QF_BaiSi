@@ -94,4 +94,13 @@ public interface IApiService {
     //推荐评论
     public static final String TUIJIAN_COMMENT_URL = "topic/comment_list/{id}/0/budejie-android-6.6.1/0-20.json?";
 
+
+    /**
+     * 我的圆形选项
+     */
+    public static final String MINE_OPTION = "http://s.budejie.com/op/square2/budejie-android-6.5.8/tencentyingyongbao/0-100.json?market=tencentyingyongbao&udid=864394010216507&appname=baisibudejie&os=4.4.2&client=android&visiting=&mac=D8%3A50%3AE6%3AA4%3A16%3AD7&ver=6.5.8";
+
+
+    public static final String MINE_OPTIONMENU = "http://d.api.budejie.com/tag/subscribe/budejie-android-6.5.8.json";
+
 }
